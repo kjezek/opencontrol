@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<project name="Control" default="clean-build" basedir=".">
+
+    <description>Builds, tests, and runs the project Control.</description>
+
+    <property name="src.dir"     value="src"/>
+    <property name="build.dir"   value="build"/>
+    <property name="lib.dir"    value="lib" />
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="dist"/>
+    <property name="main-class"  value="cz.control.Main"/>
+    <property name="jar.name"   value="OpenControl.jar" />
+
+    <target name="clean-build" depends="clean,jar"/>
+
+    <path id="dep.runtime">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${jar.dir}"/>
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac encoding="Windows-1250" srcdir="${src.dir}" destdir="${classes.dir}" classpathref="dep.runtime"
+                target="1.5" source="1.5"/>
+    </target>
+
+    <target name="jar" depends="compile,copy-files">
+        <mkdir dir="${jar.dir}"/>
+
+        <manifestclasspath property="jar.classpath" jarfile="${jar.name}">
+            <classpath refid="dep.runtime" />
+        </manifestclasspath>
+
+        <!--copy additional resources -->
+        <copy todir="${classes.dir}">
+            <fileset dir="${src.dir}">
+                <include name="**/*.png"/>
+            </fileset>
+        </copy>
+        <jar destfile="${jar.dir}/${ant.project.name}.jar"
+             basedir="${classes.dir}" file="${jar.dir}/${jar.name}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+                <attribute name="Class-Path" value="${jar.classpath}" />
+            </manifest>
+        </jar>
+
+    </target>
+
+
+    <!-- Zkopírování potřebných souborů -->    
+    <target name="copy-files" >
+        <mkdir dir="${jar.dir}\reports" />
+        <copy todir="${jar.dir}\reports">
+            <fileset dir="reports" includes="*.jrxml">
+            </fileset>
+        </copy>
+        <copy file="start.sh" todir="${jar.dir}" />
+        <copy file="start.bat" todir="${jar.dir}" />
+        <!--<copy file="start.jnlp" todir="${dist.dir}" />-->
+
+        <!-- licenční soubory -->
+<!--        <mkdir dir="${dist.dir}\licence" />
+        <copy todir="${dist.dir}\licence">
+            <fileset dir="licence" includes="*.txt" />
+        </copy>-->
+
+        <!-- pdf verze dokumentaci -->
+        <mkdir dir="${jar.dir}\dokumentace" />
+        <copy todir="${jar.dir}\dokumentace">
+            <file file="dokumentace/uzivatelska_prirucka.pdf" />
+        </copy>
+
+        <echo>Copy Jars</echo>
+        <copy todir="${jar.dir}/lib/" overwrite="true">
+            <fileset dir="lib" includes="*.jar" />
+        </copy>
+        <copy todir="${jar.dir}/jre/" overwrite="true">
+            <fileset dir="jre" includes="**" />
+        </copy>
+
+
+        <!--<echo>Copying signed jars</echo>-->
+        <!--&lt;!&ndash; It assumes pre-signed jars &ndash;&gt;-->
+        <!--<copy todir="${dist.dir}/lib/" overwrite="true">-->
+            <!--<fileset dir="signed_jars" includes="*.jar" />-->
+        <!--</copy>-->
+        <!-- -->
+
+    </target>
+
+
+
+
+
+    <!-- Vytvoření .EXE souboru pomocí programu Launch4j.exe -->
+    <target name="make-exe" >
+        <!-- exec dir="${dist.dir}" executable="C:\Program Files\Launch4j\launch4j.exe">
+            <arg line="d:\work\Java\Control\launch4j.xml"/>
+        </exec -->
+    </target>
+
+    <!-- Podepsání JARů pro spuštění v Java Web Start-->
+    <target name="sign-jar">
+        <signjar keystore="keystore.ks"
+                 alias="http://opencontrol.cz/"
+                 storepass="open12CONTROL" >
+            <path>
+                <fileset dir="${jar.dir}" includes="OpenControl.jar" />
+            </path>
+        </signjar>
+    </target>
+
+    <!-- podepsání 3rd party jarú (spuštěno samostatně) -->
+    <target name="sign-third-party-jar">
+        <copy todir="signed_jars">
+            <fileset dir="lib/" includes="**/*.jar" />
+        </copy>
+
+        <signjar keystore="keystore.ks"
+                 alias="http://opencontrol.cz/"
+                 storepass="open12CONTROL" >
+            <path>
+                <fileset dir="signed_jars/" includes="**/*.jar" />
+            </path>
+        </signjar>
+
+    </target>
+
+
+
+</project>
