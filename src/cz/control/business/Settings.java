@@ -574,7 +574,10 @@ public class Settings {
             
             /* Jestliže nalezl textový nod*/
             if (n.getNodeType() == Node.TEXT_NODE) {
-                return n.getNodeValue().trim(); /* Vyber text */
+                String val = n.getNodeValue().trim();
+                if (!val.isEmpty()) {
+                    return val;  /* Vyber text */
+                }
             }
             
             /* Jestliže nalezl CDATA nod*/
