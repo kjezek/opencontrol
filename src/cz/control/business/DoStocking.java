@@ -91,19 +91,22 @@ public class DoStocking {
         // Nastav hodnoty
         for (Stocking i: stockings.getAllStockingItems(oldStockingPreview)) {
             Goods goods = store.getGoodsByID(i.getGoodsId());
-            
-            // Vytvoø zboží s množstvím 
-            // stav na skladì - rozdíl inventury
-            Goods newGoods = new Goods(goods.getGoodsID(), goods.getName(), goods.getType(),
-                    goods.getDph(), goods.getUnit(), goods.getEan(),
-                    goods.getNc(), goods.getPcA(), goods.getPcB(), goods.getPcC(),
-                    goods.getPcD(), new BigDecimal(goods.getQuantity()).subtract( new BigDecimal(i.getDifer()) ).doubleValue() );
-            
-            //Doplò zboží podle hodnoty po odeètení rozdílu pøedchozí inventury
-            addStockingItem(newGoods);
-            
-            // Nastav množství podle hodnoty z pøedchozí inventury
-            setQuantity(goods.getGoodsID(), goods.getQuantity());
+
+            // null if this item has been already deleted from the store
+            if (goods.getGoodsID() != null) {
+                // Vytvoø zboží s množstvím
+                // stav na skladì - rozdíl inventury
+                Goods newGoods = new Goods(goods.getGoodsID(), goods.getName(), goods.getType(),
+                        goods.getDph(), goods.getUnit(), goods.getEan(),
+                        goods.getNc(), goods.getPcA(), goods.getPcB(), goods.getPcC(),
+                        goods.getPcD(), new BigDecimal(goods.getQuantity()).subtract(new BigDecimal(i.getDifer())).doubleValue());
+
+                //Doplò zboží podle hodnoty po odeètení rozdílu pøedchozí inventury
+                addStockingItem(newGoods);
+
+                // Nastav množství podle hodnoty z pøedchozí inventury
+                setQuantity(goods.getGoodsID(), goods.getQuantity());
+            }
         }
     }
       

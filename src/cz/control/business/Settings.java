@@ -65,8 +65,8 @@ public class Settings {
     private static int defaultSalePrice = DoBuy.USE_PCA_FOR_SUM;
     private static int defaultDiscountPrice = DoBuy.USE_PCD_FOR_SUM;
     
-    private static String lastUpdate = "20.8.2018";
-    private static String version = "1.3";
+    private static String lastUpdate = "2.4.2020";
+    private static String version = "1.4";
     private static String revision = "0";
     
     private static Cryptographic crypto;
