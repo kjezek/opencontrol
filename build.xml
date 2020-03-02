@@ -2,7 +2,7 @@
 <!-- You may freely edit this file. See commented blocks below for -->
 <!-- some examples of how to customize the build. -->
 <!-- (If you delete it and reopen the project it will be recreated.) -->
-<project name="Control" default="clean-build" basedir=".">
+<project name="Control" default="clean-build" basedir="trunk">
 
     <description>Builds, tests, and runs the project Control.</description>
 
@@ -17,7 +17,7 @@
     <target name="clean-build" depends="clean,jar"/>
 
     <path id="dep.runtime">
-        <fileset dir="${lib.dir}">
+        <fileset dir="lib">
             <include name="**/*.jar" />
         </fileset>
     </path>
@@ -42,7 +42,7 @@
 
         <!--copy additional resources -->
         <copy todir="${classes.dir}">
-            <fileset dir="${src.dir}">
+            <fileset dir="src">
                 <include name="**/*.png"/>
             </fileset>
         </copy>
